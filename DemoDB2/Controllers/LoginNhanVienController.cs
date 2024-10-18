@@ -58,42 +58,18 @@ namespace DemoDB2.Controllers
 
             if (ModelState.IsValid)
             {
-                if (_user == null || string.IsNullOrWhiteSpace(_user.Ten) || _user.Ten.Length > 30)
-                {
-                    ViewBag.ErrorRegister = "Tên của bạn không được để trống hoặc phải có nhiều hơn 30 ký tự";
-                    return View(_user);
-                }
-                if (string.IsNullOrWhiteSpace(_user.Email))
-                {
-                    ViewBag.ErrorRegister = "Hãy nhập email của bạn vào";
-                    return View(_user);
-                }
-
                 bool isValidEmail = Regex.IsMatch(_user.Email, @"\A(?:[a-zA-Z][a-zA-Z0-9]*@(?:gmail\.com|yahoo\.com)\z)");
+
                 if (!_user.Email.Contains("@") || !isValidEmail)
                 {
                     ViewBag.ErrorRegister = "Email không hợp lệ.";
-                    return View(_user);
+                    return View();
                 }
-                if(string.IsNullOrWhiteSpace(_user.SoDienThoai)||_user.SoDienThoai.Length != 10)
-                {
-                    ViewBag.ErrorRegister = "Số điện thoại phải có 10 số";
-                    return View(_user);
-                }
-                if (!_user.ChucVuID.HasValue || _user.ChucVuID.Value == 0)
-                {
-                    ViewBag.ErrorRegister = "Hãy chọn chức vụ cho tài khoản";
-                    return View(_user);
-                }
-                if (string.IsNullOrWhiteSpace(_user.MatKhau) || _user.MatKhau.Length < 6)
-                {
-                    ViewBag.ErrorRegister = "Mật khẩu phải có ít nhât 6 ký tự";
-                    return View(_user);
-                }
+
                 if (_user.MatKhau != ConfirmPassword)
                 {
                     ViewBag.ErrorRegister = "Mật khẩu và xác nhận mật khẩu không khớp.";
-                    return View(_user);
+                    return View();
                 }
 
                 var check_Email = database.NhanVien.Where(s => s.Email == _user.Email).FirstOrDefault();
@@ -107,10 +83,10 @@ namespace DemoDB2.Controllers
                 else
                 {
                     ViewBag.ErrorRegister = "Email này đã tồn tại";
-                    return View(_user);
+                    return View();
                 }
             }
-            return View(_user);
+            return View();
         }
         public ActionResult LogOutNV()
         {
@@ -173,52 +149,25 @@ namespace DemoDB2.Controllers
                 {
                     return HttpNotFound();
                 }
-
-                // Kiểm tra tên
-                if (string.IsNullOrWhiteSpace(model.Ten) || model.Ten.Length > 30)
-                {
-                    ModelState.AddModelError("Ten", "Tên của bạn không được để trống hoặc phải có ít hơn hoặc bằng 30 ký tự");
-                    return View(model);
-                }
-
-                // Kiểm tra email
-                bool isValidEmail = Regex.IsMatch(model.Email, @"\A(?:[a-zA-Z][a-zA-Z0-9]*@(?:gmail\.com|yahoo\.com)\z)");
-                if (!isValidEmail)
-                {
-                    ModelState.AddModelError("Email", "Email không hợp lệ.");
-                    return View(model);
-                }
-
-                // Kiểm tra số điện thoại
-                if (string.IsNullOrWhiteSpace(model.SoDienThoai) || !Regex.IsMatch(model.SoDienThoai, @"^\d{10}$"))
-                {
-                    ModelState.AddModelError("SoDienThoai", "Số điện thoại phải có 10 số");
-                    return View(model);
-                }
-
-
-                // Kiểm tra mật khẩu mới nếu được cung cấp
-                if (!string.IsNullOrEmpty(newPassword))
-                {
-                    if (newPassword.Length < 6)
-                    {
-                        ModelState.AddModelError("newPassword", "Mật khẩu phải có ít nhất 6 ký tự");
-                        return View(model);
-                    }
-                    if (newPassword != confirmNewPassword)
-                    {
-                        ModelState.AddModelError("confirmNewPassword", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
-                        return View(model);
-                    }
-                    existingUser.MatKhau = newPassword;
-                }
-
-                // Cập nhật thông tin
                 existingUser.Ten = model.Ten;
                 existingUser.DiaChi = model.DiaChi;
                 existingUser.SoDienThoai = model.SoDienThoai;
                 existingUser.Email = model.Email;
-                existingUser.ChucVuID = model.ChucVuID;
+
+                // Xử lý mật khẩu
+                if (!string.IsNullOrEmpty(newPassword))
+                {
+                    if (newPassword == confirmNewPassword)
+                    {
+                        existingUser.MatKhau = newPassword;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
+                        return View(model);
+                    }
+                }
+                // Nếu mật khẩu mới trống, giữ nguyên mật khẩu cũ
 
                 try
                 {
@@ -231,7 +180,7 @@ namespace DemoDB2.Controllers
                     {
                         foreach (var validationError in validationErrors.ValidationErrors)
                         {
-                            System.Diagnostics.Debug.WriteLine($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
+                            System.Diagnostics.Debug.WriteLine("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
                         }
                     }
                     ModelState.AddModelError("", "Có lỗi xảy ra khi lưu dữ liệu. Vui lòng kiểm tra lại thông tin.");
@@ -241,35 +190,35 @@ namespace DemoDB2.Controllers
         }
         public ActionResult ViewNV()
         {
-            if (Session["ChucVuID"] == null || (int)Session["ChucVuID"] != 1)
+            if (Session["TenChucVu"] == null || (string)Session["TenChucVu"] != "Giám Đốc")
             {
                 ViewBag.ErrorMessage = "Bạn không có quyền truy cập vào trang này.";
                 return View("AccessDenied");
             }
             var nhanVien = database.NhanVien
-                   .Include(nv => nv.ChucVu)
-                   .Select(nv => new
-                   {
-                       NhanVienID = nv.NhanVienID,
-                       Ten = nv.Ten,
-                       DiaChi = nv.DiaChi,
-                       SoDienThoai = nv.SoDienThoai,
-                       Email = nv.Email,
-                       ChucVuID = nv.ChucVuID,
-                       TenChucVu = nv.ChucVu.TenChucVu
-                   })
-                   .ToList()
-                   .Select(x => new NhanVien
-                   {
-                       NhanVienID = x.NhanVienID,
-                       Ten = x.Ten,
-                       DiaChi = x.DiaChi,
-                       SoDienThoai = x.SoDienThoai,
-                       Email = x.Email,
-                       ChucVuID = x.ChucVuID,
-                       TenChucVu = x.TenChucVu
-                   })
-                   .ToList();
+          .Include(nv => nv.ChucVu)
+          .Select(nv => new
+          {
+              NhanVienID = nv.NhanVienID,
+              Ten = nv.Ten,
+              DiaChi = nv.DiaChi,
+              SoDienThoai = nv.SoDienThoai,
+              Email = nv.Email,
+              ChucVuID = nv.ChucVuID,
+              TenChucVu = nv.ChucVu.TenChucVu
+          })
+          .ToList()
+          .Select(x => new NhanVien
+          {
+              NhanVienID = x.NhanVienID,
+              Ten = x.Ten,
+              DiaChi = x.DiaChi,
+              SoDienThoai = x.SoDienThoai,
+              Email = x.Email,
+              ChucVuID = x.ChucVuID,
+              TenChucVu = x.TenChucVu
+          })
+          .ToList();
             return View(nhanVien);
         }
         // GET: LoginNhanVien/DeleteNV/5
@@ -301,12 +250,11 @@ namespace DemoDB2.Controllers
         }
         public ActionResult CustomerManagement()
         {
-            if (Session["ChucVuID"] == null || (int)Session["ChucVuID"] != 1)
+            if (Session["TenChucVu"] == null || (string)Session["TenChucVu"] != "Giám Đốc")
             {
                 ViewBag.ErrorMessage = "Bạn không có quyền truy cập vào trang này.";
                 return View("AccessDenied");
             }
-
             var customers = database.NguoiDung.ToList();
             return View(customers);
         

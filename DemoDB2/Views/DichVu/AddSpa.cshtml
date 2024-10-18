@@ -1,8 +1,5 @@
 ﻿@model DemoDB2.Models.Spa
-@{
-    ViewBag.Title = "Thêm Spa";
-    Layout = "~/Views/Shared/_LayoutNV.cshtml";
-}
+
 @using (Html.BeginForm("AddSpa", "DichVu", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()

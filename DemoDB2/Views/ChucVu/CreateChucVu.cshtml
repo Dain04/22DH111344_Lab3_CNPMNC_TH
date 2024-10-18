@@ -1,4 +1,5 @@
 ﻿@model DemoDB2.Models.ChucVu
+
 @{
     ViewBag.Title = "Tạo Chức Vụ Mới";
     Layout = "~/Views/Shared/_LayoutNV.cshtml";
@@ -9,26 +10,10 @@
 @using (Html.BeginForm("CreateChucVu", "ChucVu", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
+
     <div class="form-horizontal">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ChucVuID, "ID Chức Vụ", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ChucVuID, new { htmlAttributes = new { @class = "form-control", type = "number", min = "1" } })
-                @Html.ValidationMessageFor(model => model.ChucVuID, "", new { @class = "text-danger" })
-                <div class="alert alert-warning mt-2" role="alert" style="margin-top: 10px; padding: 10px; background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px;">
-                    <i class="fas fa-exclamation-triangle" style="color: #856404; margin-right: 5px;"></i>
-                    <strong style="color: #856404;">LƯU Ý:</strong>
-                    <span style="color: #856404;"> ID CHỨC VỤ DÙNG ĐỂ PHÂN QUYỀN QUẢN LÝ - CHỈ NHẬP SỐ DƯƠNG</span>
-                    <ul style="margin-top: 5px; margin-bottom: 0; color: #856404;">
-                        <li>ID = 1: Quyền quản trị cao nhất</li>
-                        <li>ID > 1: Các quyền thấp hơn</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.TenChucVu, "Tên Chức Vụ", new { @class = "control-label col-md-2" })
@@ -49,55 +34,12 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Tạo Mới" class="btn btn-primary" />
-                @Html.ActionLink("Quay Lại Danh Sách", "ViewChucVu", null, new { @class = "btn btn-default" })
+                @Html.ActionLink("Quay Lại Danh Sách", "Index", null, new { @class = "btn btn-default" })
             </div>
         </div>
     </div>
 }
 
-@section Styles {
-    <style>
-        .alert-warning {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @@keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .form-control:focus {
-            border-color: #80bdff;
-            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-        }
-
-        .text-danger {
-            font-weight: bold;
-            margin-top: 5px;
-        }
-    </style>
-}
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script>
-        $(document).ready(function () {
-            // Thêm validation cho input số
-            $("#ChucVuID").on("input", function() {
-                var value = $(this).val();
-                if (value <= 0) {
-                    $(this).addClass("is-invalid");
-                } else {
-                    $(this).removeClass("is-invalid");
-                }
-            });
-        });
-    </script>
 }

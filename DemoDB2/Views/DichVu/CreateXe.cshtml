@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_LayoutNV.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <br />
 <div class="bang">
@@ -11,29 +11,33 @@
     {
         @Html.AntiForgeryToken()
         <table class="table-bordered">
-       
             <tr>
-                <td>@Html.LabelFor(model => model.HieuXe ,"Hiệu Xe")</td>
-                <td>@Html.EditorFor(model => model.HieuXe,new { htmlAttributes = new { @class = "form-control" } })</td>
+                <td>@Html.LabelFor(model => model.XeID)</td>
+                <td>@Html.EditorFor(model => model.XeID, new { htmlAttributes = new { @class = "form-control" } })</td>
+                <td>@Html.ValidationMessageFor(model => model.XeID, "", new { @class = "text-danger" })</td>
+            </tr>
+            <tr>
+                <td>@Html.LabelFor(model => model.HieuXe)</td>
+                <td>@Html.EditorFor(model => model.HieuXe, new { htmlAttributes = new { @class = "form-control" } })</td>
                 <td>@Html.ValidationMessageFor(model => model.HieuXe, "", new { @class = "text-danger" })</td>
             </tr>
             <tr>
-                <td>@Html.LabelFor(model => model.BienSoXe,"Biển Số Xe")</td>
+                <td>@Html.LabelFor(model => model.BienSoXe)</td>
                 <td>@Html.EditorFor(model => model.BienSoXe, new { htmlAttributes = new { @class = "form-control" } })</td>
                 <td>@Html.ValidationMessageFor(model => model.BienSoXe, "", new { @class = "text-danger" })</td>
             </tr>
             <tr>
-                <td>@Html.LabelFor(model => model.TaiXe,"Tài Xế")</td>
+                <td>@Html.LabelFor(model => model.TaiXe)</td>
                 <td>@Html.EditorFor(model => model.TaiXe, new { htmlAttributes = new { @class = "form-control" } })</td>
                 <td>@Html.ValidationMessageFor(model => model.TaiXe, "", new { @class = "text-danger" })</td>
             </tr>
             <tr>
-                <td>@Html.LabelFor(model => model.SoChoNgoi,"Số Chỗ Ngồi")</td>
+                <td>@Html.LabelFor(model => model.SoChoNgoi)</td>
                 <td>@Html.EditorFor(model => model.SoChoNgoi, new { htmlAttributes = new { @class = "form-control" } })</td>
                 <td>@Html.ValidationMessageFor(model => model.SoChoNgoi, "", new { @class = "text-danger" })</td>
             </tr>
             <tr>
-                <td>@Html.LabelFor(model => model.GiaXe,"Giá Xe")</td>
+                <td>@Html.LabelFor(model => model.GiaXe)</td>
                 <td>@Html.EditorFor(model => model.GiaXe, new { htmlAttributes = new { @class = "form-control" } })</td>
                 <td>@Html.ValidationMessageFor(model => model.GiaXe, "", new { @class = "text-danger" })</td>
             </tr>
@@ -72,7 +76,7 @@
 
 <style>
     .bang {
-        margin-left: 350px;
+        margin-left: 950px;
         width: 450px;
         background-color: white;
         border: 1px solid #ccc;

@@ -1,9 +1,8 @@
-﻿
+
 namespace DemoDB2.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.Web;
 
     public partial class NhanVien

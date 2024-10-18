@@ -59,61 +59,45 @@
     .btn-delete {
         background-color: #dc3545;
     }
-    .btn-add {
-        background-color: #28a745; /* Màu nền xanh lá */
-        color: white; /* Màu chữ trắng */
-        padding: 10px 20px; /* Khoảng cách padding */
-        border-radius: 8px; /* Bo tròn các góc */
-        text-decoration: none; /* Bỏ gạch chân */
-        font-size: 10px; /* Kích thước chữ */
-        font-weight: bold; /* Đậm chữ */
-        border: none; /* Bỏ viền */
-       
-    }
-
 </style>
-<div class="employee-container">
-    @Html.ActionLink("Thêm Nhân Viên", "RegisterNhanVien", null, new { @class = "btn-add" })
-</div>
 <div class="employee-container">
     <div class="employee-list">
         <h3>Nhân Viên</h3>
-        @foreach (var employee in Model.Where(e => e.ChucVuID != 1))
-
+        @foreach (var employee in Model.Where(e => e.TenChucVu == "Nhân Viên"))
         {
-            <div class="employee-card">
-                <h3>@employee.Ten</h3>
-                <div class="employee-info"><strong>ID:</strong> @employee.NhanVienID</div>
-                <div class="employee-info"><strong>Tên:</strong> @employee.Ten</div>
-                <div class="employee-info"><strong>Tên Chức Vụ:</strong> @employee.TenChucVu </div>
-                <div class="employee-info"><strong>Lương:</strong> @employee.Luong</div>
-                <div class="employee-info"><strong>Địa chỉ:</strong> @employee.DiaChi</div>
-                <div class="employee-info"><strong>SĐT:</strong> @employee.SoDienThoai</div>
-                <div class="employee-info"><strong>Email:</strong> @employee.Email</div>
-                @if ((int)Session["ChucVuID"] == 1)
-                {
-                    <div class="employee-actions">
-                        @Html.ActionLink("Xóa", "DeleteNV", new { id = employee.NhanVienID }, new { @class = "btn-delete" })
-                    </div>
-                }
+    <div class="employee-card">
+        <h3>@employee.Ten</h3>
+        <div class="employee-info"><strong>ID:</strong> @employee.NhanVienID</div>
+        <div class="employee-info"><strong>Tên:</strong> @employee.Ten</div>
+        <div class="employee-info"><strong>Tên Chức Vụ:</strong> @employee.TenChucVu </div>
+        <div class="employee-info"><strong>Lương:</strong> @employee.Luong</div>
+        <div class="employee-info"><strong>Địa chỉ:</strong> @employee.DiaChi</div>
+        <div class="employee-info"><strong>SĐT:</strong> @employee.SoDienThoai</div>
+        <div class="employee-info"><strong>Email:</strong> @employee.Email</div>
+        @if (Session["TenChucVu"] != null && (string)Session["TenChucVu"] == "Giám Đốc")
+        {
+            <div class="employee-actions">
+                @Html.ActionLink("Xóa", "DeleteNV", new { id = employee.NhanVienID }, new { @class = "btn-delete" })
             </div>
+        }
+    </div>
         }
     </div>
     <div class="employee-list">
         <h3>Giám Đốc</h3>
-        @foreach (var employee in Model.Where(e => e.ChucVuID ==1 ))
+        @foreach (var employee in Model.Where(e => e.TenChucVu =="Giám Đốc" ))
         {
-            <div class="employee-card">
-                <h3>@employee.Ten</h3>
-                <div class="employee-info"><strong>ID:</strong> @employee.NhanVienID</div>
-                <div class="employee-info"><strong>Tên:</strong> @employee.Ten</div>
-                <div class="employee-info"><strong>Tên Chức Vụ:</strong> @employee.TenChucVu</div>
-                <div class="employee-info"><strong>Lương:</strong> @employee.Luong</div>
-                <div class="employee-info"><strong>Địa chỉ:</strong> @employee.DiaChi</div>
-                <div class="employee-info"><strong>SĐT:</strong> @employee.SoDienThoai</div>
-                <div class="employee-info"><strong>Email:</strong> @employee.Email</div>
+    <div class="employee-card">
+        <h3>@employee.Ten</h3>
+        <div class="employee-info"><strong>ID:</strong> @employee.NhanVienID</div>
+        <div class="employee-info"><strong>Tên:</strong> @employee.Ten</div>
+        <div class="employee-info"><strong>Tên Chức Vụ:</strong> @employee.TenChucVu</div>
+        <div class="employee-info"><strong>Lương:</strong> @employee.Luong</div>
+        <div class="employee-info"><strong>Địa chỉ:</strong> @employee.DiaChi</div>
+        <div class="employee-info"><strong>SĐT:</strong> @employee.SoDienThoai</div>
+        <div class="employee-info"><strong>Email:</strong> @employee.Email</div>
        
-            </div>
+    </div>
         }
     </div>
 </div>
