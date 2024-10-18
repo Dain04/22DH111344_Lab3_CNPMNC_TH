@@ -1,37 +1,56 @@
 ﻿@model DemoDB2.Models.ChucVu
 
+@{
+    ViewBag.Title = "Chỉnh Sửa Chức Vụ";
+    Layout = "~/Views/Shared/_LayoutNV.cshtml";
+}
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>ChucVu</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TenChucVu, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TenChucVu, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TenChucVu, "", new { @class = "text-danger" })
-            </div>
-        </div>
+<div class="form-horizontal">
+    <h4>ChucVu</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.MoTaChucVu, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.MoTaChucVu, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.MoTaChucVu, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+    <div class="form-group">
+        @Html.LabelFor(model => model.ChucVuID, "ID Chức Vụ", new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.ChucVuID, new { htmlAttributes = new { @class = "form-control", type = "number", min = "1" } })
+            @Html.ValidationMessageFor(model => model.ChucVuID, "", new { @class = "text-danger" })
+            <div class="alert alert-warning mt-2" role="alert" style="margin-top: 10px; padding: 10px; background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px;">
+                <i class="fas fa-exclamation-triangle" style="color: #856404; margin-right: 5px;"></i>
+                <strong style="color: #856404;">LƯU Ý:</strong>
+                <span style="color: #856404;"> ID CHỨC VỤ DÙNG ĐỂ PHÂN QUYỀN QUẢN LÝ - CHỈ NHẬP SỐ DƯƠNG</span>
+                <ul style="margin-top: 5px; margin-bottom: 0; color: #856404;">
+                    <li>ID = 1: Quyền quản trị cao nhất</li>
+                    <li>ID > 1: Các quyền thấp hơn</li>
+                </ul>
             </div>
         </div>
     </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.TenChucVu, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.TenChucVu, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.TenChucVu, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.MoTaChucVu, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.MoTaChucVu, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.MoTaChucVu, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
 }
 
 <div>

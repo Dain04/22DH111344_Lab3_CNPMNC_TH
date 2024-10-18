@@ -1,5 +1,8 @@
 ﻿@model DemoDB2.Models.MonAn
-
+@{
+    ViewBag.Title = "Chỉnh Sửa Món Ăn";
+    Layout = "~/Views/Shared/_LayoutNV.cshtml";
+}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -31,18 +34,10 @@
                         </div>
 
                         <div class="form-group row mb-3">
-                            @Html.LabelFor(model => model.IDBan, htmlAttributes: new { @class = "col-sm-3 col-form-label" })
-                            <div class="col-sm-9">
-                                @Html.EditorFor(model => model.IDBan, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.IDBan, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
                             @Html.LabelFor(model => model.UploadImage, "Hình ảnh món ăn", new { @class = "col-sm-3 col-form-label" })
                             <div class="col-sm-9">
                                 <input type="file" name="UploadImage" class="form-control-file" onchange="ChangeImage(this, document.getElementById('previewImg'))" />
-                                <img id="previewImg" src="@(string.IsNullOrEmpty(Model.ImageMonAn) ? "#" : Url.Content(Model.ImageMonAn))" 
+                                <img id="previewImg" src="@(string.IsNullOrEmpty(Model.ImageMonAn) ? "#" : Url.Content(Model.ImageMonAn))"
                                      alt="Preview Image" class="mt-2" style="max-width: 200px; @(string.IsNullOrEmpty(Model.ImageMonAn) ? "display: none;" : "")" />
                             </div>
                         </div>

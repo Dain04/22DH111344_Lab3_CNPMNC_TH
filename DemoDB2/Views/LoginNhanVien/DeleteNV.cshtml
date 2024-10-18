@@ -1,42 +1,59 @@
 ﻿@model DemoDB2.Models.NhanVien
-
+@{
+    ViewBag.Title = "Xác nhận xóa nhân viên";
+    Layout = "~/Views/Shared/_LayoutNV.cshtml";
+}
+<br /><br /><br />
 <div class="container mt-5">
-    <div class="card">
+    <div class="card shadow">
         <div class="card-header bg-danger text-white">
-            <h3>Xác nhận xóa nhân viên</h3>
+            <h3 class="mb-0">Xác nhận xóa nhân viên</h3>
         </div>
         <div class="card-body">
-            <h4 class="card-title">Bạn có chắc chắn muốn xóa nhân viên này?</h4>
-            <hr />
-            <dl class="row">
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Ten)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.Ten)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ChucVuID)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.ChucVuID)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Luong)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.Luong)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DiaChi)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.DiaChi)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.SoDienThoai)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.SoDienThoai)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Email)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.Email)</dd>
-            </dl>
-
-            @using (Html.BeginForm("DeleteNV", "LoginNhanVien", FormMethod.Post))
+            <h4 class="card-title text-center mb-4">Bạn có chắc chắn muốn xóa nhân viên này?</h4>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th class="bg-light">@Html.DisplayNameFor(model => model.Ten)</th>
+                            <td>@Html.DisplayFor(model => model.Ten)</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">@Html.DisplayNameFor(model => model.ChucVuID)</th>
+                            <td>@Html.DisplayFor(model => model.ChucVuID)</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">@Html.DisplayNameFor(model => model.Luong)</th>
+                            <td>@Html.DisplayFor(model => model.Luong)</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">@Html.DisplayNameFor(model => model.DiaChi)</th>
+                            <td>@Html.DisplayFor(model => model.DiaChi)</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">@Html.DisplayNameFor(model => model.SoDienThoai)</th>
+                            <td>@Html.DisplayFor(model => model.SoDienThoai)</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">@Html.DisplayNameFor(model => model.Email)</th>
+                            <td>@Html.DisplayFor(model => model.Email)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            @using (Html.BeginForm("DeleteNV", "LoginNhanVien", FormMethod.Post, new { @class = "mt-4 text-center" }))
             {
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(model => model.NhanVienID)
                 <div class="form-actions no-color">
-                    <input type="submit" value="Xóa" class="btn btn-danger" />
-                    @Html.ActionLink("Trở về danh sách", "ViewNV", "LoginNhanVien", null, new { @class = "btn btn-secondary ml-2" })
+                    <button type="submit" class="btn btn-danger btn-lg mr-2">
+                        <i class="fas fa-trash-alt mr-2"></i>Xóa nhân viên
+                    </button>
+                    @Html.ActionLink("Trở về danh sách", "ViewNV", "LoginNhanVien", null, new { @class = "btn btn-secondary btn-lg" })
                 </div>
             }
         </div>
     </div>
 </div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">

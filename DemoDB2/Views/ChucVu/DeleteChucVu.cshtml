@@ -1,0 +1,26 @@
+﻿@model DemoDB2.Models.ChucVu
+
+@{
+    ViewBag.Title = "Xóa Chức Vụ";
+    Layout = "~/Views/Shared/_LayoutNV.cshtml";
+}
+<div>
+    <h4>Xác nhận xóa chức vụ</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(model => model.TenChucVu)</dt>
+        <dd>@Html.DisplayFor(model => model.TenChucVu)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.MoTaChucVu)</dt>
+        <dd>@Html.DisplayFor(model => model.MoTaChucVu)</dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <input type="submit" value="Xóa" class="btn btn-danger" />
+            @Html.ActionLink("Quay lại", "ViewChucVu", null, new { @class = "btn btn-default" })
+        </div>
+    }
+</div>

@@ -1,5 +1,8 @@
 ﻿@model DemoDB2.Models.Xe
-
+@{
+    ViewBag.Title = "Chỉnh Sửa Xe";
+    Layout = "~/Views/Shared/_LayoutNV.cshtml";
+}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -8,7 +11,7 @@
                     <h4 class="mb-0">Thông tin Xe</h4>
                 </div>
                 <div class="card-body">
-                    @using (Html.BeginForm("EditXe", "Controller", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+                    @using (Html.BeginForm("EditXe", "DichVu", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
                     {
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })

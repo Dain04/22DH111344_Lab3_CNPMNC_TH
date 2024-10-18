@@ -55,6 +55,7 @@
                         <td>
                             @Html.EditorFor(model => model.SoDienThoai, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.SoDienThoai, "", new { @class = "text-danger" })
+                            <small class="text-muted">Số điện thoại phải có 10 số</small>
                         </td>
                     </tr>
                     <tr>
@@ -95,6 +96,16 @@
 
     actualBtn.addEventListener('change', function () {
         fileChosen.textContent = this.files[0] ? this.files[0].name : 'Chưa chọn file nào';
+    });
+
+    /*Số điện thoại*/
+    $(document).ready(function () {
+        $('#SoDienThoai').on('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            }
+        });
     });
 </script>
 <style>

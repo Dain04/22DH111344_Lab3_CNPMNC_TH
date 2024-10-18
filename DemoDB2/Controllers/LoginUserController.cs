@@ -50,18 +50,33 @@ namespace DemoDB2.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (_user == null || string.IsNullOrWhiteSpace(_user.TenNguoiDung)|| _user.TenNguoiDung.Length>30)
+                {
+                    ViewBag.ErrorRegister = "Tên người dùng không được để trống hoặc phải có nhiều hơn 30 ký tự";
+                    return View(_user);
+                }
+              
+                if (string.IsNullOrWhiteSpace(_user.Email))
+                {
+                    ViewBag.ErrorRegister = "Hãy nhập email của bạn vào";
+                    return View(_user);
+                }
                 bool isValidEmail = Regex.IsMatch(_user.Email, @"\A(?:[a-zA-Z][a-zA-Z0-9]*@(?:gmail\.com|yahoo\.com)\z)");
-
                 if (!_user.Email.Contains("@") || !isValidEmail)
                 {
                     ViewBag.ErrorRegister = "Email không hợp lệ.";
-                    return View();
+                    return View(_user);
                 }
-
+               
+                if (string.IsNullOrWhiteSpace(_user.MatKhau)||_user.MatKhau.Length < 6)
+                {
+                    ViewBag.ErrorRegister = "Mật khẩu phải có ít nhât 6 ký tự";
+                    return View(_user);
+                }
                 if (_user.MatKhau != ConfirmPassword)
                 {
                     ViewBag.ErrorRegister = "Mật khẩu và xác nhận mật khẩu không khớp.";
-                    return View();
+                    return View(_user);
                 }
 
                 var check_Email = database.NguoiDung.Where(s => s.Email == _user.Email).FirstOrDefault();
@@ -75,10 +90,10 @@ namespace DemoDB2.Controllers
                 else
                 {
                     ViewBag.ErrorRegister = "Email này đã tồn tại";
-                    return View();
+                    return View(_user);
                 }
             }
-            return View();
+            return View(_user);
         }
 
         public ActionResult LogOutUser()
@@ -129,7 +144,18 @@ namespace DemoDB2.Controllers
                 existingUser.TenNguoiDung = model.TenNguoiDung;
                 existingUser.DiaChi = model.DiaChi;
                 existingUser.SoDienThoai = model.SoDienThoai;
-                existingUser.Email = model.Email;
+
+                // Kiểm tra tính hợp lệ của email mới
+                bool isValidEmail = Regex.IsMatch(model.Email, @"\A(?:[a-zA-Z][a-zA-Z0-9]*@(?:gmail\.com|yahoo\.com)\z)");
+                if (isValidEmail)
+                {
+                    existingUser.Email = model.Email;
+                }
+                else
+                {
+                    ModelState.AddModelError("Email", "Email không hợp lệ. Email cũ sẽ được giữ nguyên.");
+                    model.Email = existingUser.Email; // Giữ nguyên email cũ trong model để hiển thị lại trong view
+                }
 
                 if (!string.IsNullOrEmpty(newPassword))
                 {
@@ -144,28 +170,31 @@ namespace DemoDB2.Controllers
                     }
                 }
 
-                // Check for the uploaded image
+                if (!string.IsNullOrEmpty(model.SoDienThoai))
+                {
+                    if (!Regex.IsMatch(model.SoDienThoai, @"^\d{10}$"))
+                    {
+                        ModelState.AddModelError("SoDienThoai", "Số điện thoại phải có 10 số");
+                        return View(model);
+                    }
+                }
+
+                // Xử lý upload ảnh
                 if (UploadImage != null && UploadImage.ContentLength > 0)
                 {
-                    // Check file type
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
                     var fileExtension = Path.GetExtension(UploadImage.FileName).ToLower();
-
                     if (!allowedExtensions.Contains(fileExtension))
                     {
                         ModelState.AddModelError("UploadImage", "Chỉ hỗ trợ các định dạng hình ảnh: JPEG, PNG.");
                         return View(model);
                     }
-
-                    // Check file size (e.g., max size: 2 MB)
                     const int maxSize = 2 * 1024 * 1024; // 2 MB
                     if (UploadImage.ContentLength > maxSize)
                     {
                         ModelState.AddModelError("UploadImage", "Kích thước tệp không được vượt quá 2 MB.");
                         return View(model);
                     }
-
-                    // Save the image
                     var fileName = Path.GetFileName(UploadImage.FileName);
                     var path = Path.Combine(Server.MapPath("~/Content/Images"), fileName);
                     UploadImage.SaveAs(path);
@@ -173,26 +202,28 @@ namespace DemoDB2.Controllers
                     Session["ProfileImage"] = existingUser.ImageUser;
                 }
 
-                try
+                if (ModelState.IsValid) // Kiểm tra lại ModelState sau khi thực hiện tất cả các validation
                 {
-                    database.SaveChanges();
-                    return RedirectToAction("Profile");
-                }
-                catch (DbEntityValidationException dbEx)
-                {
-                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    try
                     {
-                        foreach (var validationError in validationErrors.ValidationErrors)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
-                        }
+                        database.SaveChanges();
+                        return RedirectToAction("Profile");
                     }
-                    ModelState.AddModelError("", "Có lỗi xảy ra khi lưu dữ liệu. Vui lòng kiểm tra lại thông tin.");
+                    catch (DbEntityValidationException dbEx)
+                    {
+                        foreach (var validationErrors in dbEx.EntityValidationErrors)
+                        {
+                            foreach (var validationError in validationErrors.ValidationErrors)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
+                            }
+                        }
+                        ModelState.AddModelError("", "Có lỗi xảy ra khi lưu dữ liệu. Vui lòng kiểm tra lại thông tin.");
+                    }
                 }
             }
             return View(model);
         }
-
         public ActionResult ExternalLogin(string provider)
         {
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "LoginUser"));
